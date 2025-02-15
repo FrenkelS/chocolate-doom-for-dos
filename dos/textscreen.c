@@ -12,18 +12,71 @@
 // GNU General Public License for more details.
 //
 
+#include <dos.h>
+#include <sys/nearptr.h>
+
 #include "chocdos.h"
 
 #include "SDL.h"
 #include "textscreen.h"
 #include "txt_main.h"
 
+
+static void I_SetScreenMode(uint16_t mode)
+{
+	union REGS regs;
+	regs.w.ax = mode;
+	int386(0x10, &regs, &regs);
+}
+
+
+int TXT_Init(void)
+{
+	I_SetScreenMode(3);
+	return 1;
+}
+
+
+void TXT_SetWindowTitle(const char *title)
+{
+	UNUSED(title);
+}
+
+
+unsigned char *TXT_GetScreenData(void)
+{
+	return (unsigned char*)(0xb8000 + __djgpp_conventional_base);
+}
+
+
+void TXT_UpdateScreen(void)
+{
+}
+
+
+int TXT_GetChar(void)
+{
+	return 1;
+}
+
+
+void TXT_Shutdown(void)
+{
+	union REGS regs;
+	regs.h.ah = 2;
+	regs.h.bh = 0;
+	regs.h.dl = 0;
+	regs.h.dh = 23;
+	int386(0x10, &regs, &regs); // Set text pos
+	printf ("\n");
+}
+
+
 void TXT_AddWidget(TXT_UNCAST_ARG(table), TXT_UNCAST_ARG(widget)) {IMPLEMENT_ME();}
 void TXT_ClearTable(TXT_UNCAST_ARG(table)) {IMPLEMENT_ME();}
 void TXT_CloseWindow(txt_window_t*) {IMPLEMENT_ME();}
 void TXT_DispatchEvents(void) {IMPLEMENT_ME();}
 void TXT_DrawDesktop(void) {IMPLEMENT_ME();}
-int TXT_Init(void) {IMPLEMENT_ME();}
 int TXT_LowerWindow(txt_window_t*) {IMPLEMENT_ME();}
 txt_label_t *TXT_NewLabel(const char*) {IMPLEMENT_ME();}
 txt_strut_t *TXT_NewStrut(int, int) {IMPLEMENT_ME();}
@@ -38,8 +91,3 @@ void TXT_SetWindowAction(txt_window_t*, txt_horiz_align_t, TXT_UNCAST_ARG(action
 void TXT_SetWindowPosition(txt_window_t*, txt_horiz_align_t, txt_vert_align_t, int, int) {IMPLEMENT_ME();}
 void TXT_SignalConnect(TXT_UNCAST_ARG(widget), const char *signal_name, TxtWidgetSignalFunc func, void *user_data) {IMPLEMENT_ME();}
 void TXT_Sleep(int) {IMPLEMENT_ME();}
-void TXT_Shutdown(void) {IMPLEMENT_ME();}
-int TXT_GetChar(void) {IMPLEMENT_ME();}
-unsigned char *TXT_GetScreenData(void) {IMPLEMENT_ME();}
-void TXT_SetWindowTitle(const char*) {IMPLEMENT_ME();}
-void TXT_UpdateScreen(void) {IMPLEMENT_ME();}
