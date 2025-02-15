@@ -357,7 +357,7 @@ Uint32 SDL_GetRelativeMouseState(int *x, int *y)
 
 void SDL_Delay(Uint32 ms)
 {
-	delay(ms);
+	//TODO delay(ms);
 }
 
 
