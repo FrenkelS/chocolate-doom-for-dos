@@ -20,52 +20,55 @@
 #define Uint8  uint8_t
 #define Sint16  int16_t
 #define Uint16 uint16_t
+#define Sint32  int32_t
 #define Uint32 uint32_t
 
 #define SDL_bool int
 #define SDL_Window int
+#define SDL_Scancode int
+#define SDL_Keycode Sint32
 
 typedef struct SDL_MouseWheelEvent
 {
-	int y;
+	Sint32 y;
 } SDL_MouseWheelEvent;
 
 typedef struct SDL_Keysym
 {
-	int scancode;
-	int sym;
-	int mod;
+	SDL_Scancode scancode;
+	SDL_Keycode sym;
+	Uint16 mod;
 } SDL_Keysym;
 
-typedef struct SDL_Key
+typedef struct SDL_KeyboardEvent
 {
 	SDL_Keysym keysym;
-} SDL_Key;
+} SDL_KeyboardEvent;
 
-typedef struct SDL_Button
+typedef struct SDL_MouseButtonEvent
 {
-	int button;
-} SDL_Button;
+	Uint8 button;
+} SDL_MouseButtonEvent;
 
-typedef struct SDL_Text
+typedef struct SDL_TextInputEvent
 {
-	char *text;
-} SDL_Text;
+	char text[32];
+} SDL_TextInputEvent;
 
 typedef struct SDL_WindowEvent
 {
-	int event;
-	int windowID;
+	Uint32 windowID;
+	Uint8 event;
 } SDL_WindowEvent;
 
 typedef struct SDL_Event
 {
-	int type;
-	SDL_Text text;
-	SDL_Key key;
-	SDL_Button button;
-	SDL_MouseWheelEvent wheel;
+	Uint32 type;
 	SDL_WindowEvent window;
+	SDL_KeyboardEvent key;
+	SDL_TextInputEvent text;
+	SDL_MouseButtonEvent button;
+	SDL_MouseWheelEvent wheel;
 } SDL_Event;
 
 #define AUDIO_S16SYS 0
