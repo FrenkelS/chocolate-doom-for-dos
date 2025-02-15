@@ -2,9 +2,8 @@ if "%DJDIR%" == "" goto error
 
 mkdir CDOOM
 
-set CFLAGS=-O1 -march=i386 -g
-@rem set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes -Wpedantic
-@rem set CFLAGS=%CFLAGS% -Wall -Wextra
+set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
+@rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
 @set GLOBOBJS=
 @set GLOBOBJS=%GLOBOBJS% opl.c
@@ -129,7 +128,7 @@ set CFLAGS=-O1 -march=i386 -g
 @set GLOBOBJS=%GLOBOBJS% ../src/doom/wi_stuff.c
 
 gcc %GLOBOBJS% %CFLAGS% -I. -I../opl -I../pcsound -I../src -I../textscreen -DHAVE_DIRENT_H -o CDOOM/CDOOM.EXE
-@rem strip -s CDOOM/CDOOM.EXE
+strip -s CDOOM/CDOOM.EXE
 stubedit CDOOM/CDOOM.EXE dpmi=CWSDPR0.EXE
 
 
