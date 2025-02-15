@@ -33,7 +33,7 @@ void OPL_AdjustCallbacks(float) {IMPLEMENT_ME();}
 void OPL_ClearCallbacks(void) {IMPLEMENT_ME();}
 void OPL_InitRegisters(int) {IMPLEMENT_ME();}
 void OPL_Lock(void) {IMPLEMENT_ME();}
-void OPL_SetCallback(int, void (*)(void *), void*) {IMPLEMENT_ME();}
+void OPL_SetCallback(uint64_t, opl_callback_t, void*) {IMPLEMENT_ME();}
 void OPL_SetPaused(int) {IMPLEMENT_ME();}
 void OPL_Shutdown(void) {IMPLEMENT_ME();}
 void OPL_Unlock(void) {IMPLEMENT_ME();}

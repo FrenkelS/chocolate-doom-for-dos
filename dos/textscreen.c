@@ -14,31 +14,32 @@
 
 #include "chocdos.h"
 
+#include "SDL.h"
 #include "textscreen.h"
 #include "txt_main.h"
 
-void TXT_AddWidget(txt_window_t*, void*) {IMPLEMENT_ME();}
-void TXT_ClearTable(txt_window_t*) {IMPLEMENT_ME();}
+void TXT_AddWidget(TXT_UNCAST_ARG(table), TXT_UNCAST_ARG(widget)) {IMPLEMENT_ME();}
+void TXT_ClearTable(TXT_UNCAST_ARG(table)) {IMPLEMENT_ME();}
 void TXT_CloseWindow(txt_window_t*) {IMPLEMENT_ME();}
 void TXT_DispatchEvents(void) {IMPLEMENT_ME();}
 void TXT_DrawDesktop(void) {IMPLEMENT_ME();}
 int TXT_Init(void) {IMPLEMENT_ME();}
-void TXT_LowerWindow(txt_window_t*) {IMPLEMENT_ME();}
-txt_label_t *TXT_NewLabel(char*) {IMPLEMENT_ME();}
-int *TXT_NewStrut(int, int) {IMPLEMENT_ME();}
+int TXT_LowerWindow(txt_window_t*) {IMPLEMENT_ME();}
+txt_label_t *TXT_NewLabel(const char*) {IMPLEMENT_ME();}
+txt_strut_t *TXT_NewStrut(int, int) {IMPLEMENT_ME();}
 txt_table_t *TXT_NewTable(int) {IMPLEMENT_ME();}
-int *TXT_NewWindow(char*) {IMPLEMENT_ME();}
-txt_window_action_t *TXT_NewWindowAction(int, char*) {IMPLEMENT_ME();}
-void TXT_SetColor(int, int, int, int) {IMPLEMENT_ME();}
-void TXT_SetDesktopTitle(char*) {IMPLEMENT_ME();}
-void TXT_SetFGColor(txt_label_t*, int) {IMPLEMENT_ME();}
-void TXT_SetLabel(txt_label_t*, char*) {IMPLEMENT_ME();}
-void TXT_SetWindowAction(txt_window_t*, int, txt_window_action_t*) {IMPLEMENT_ME();}
-void TXT_SetWindowPosition(txt_window_t*, int, int, int, int) {IMPLEMENT_ME();}
+txt_window_t *TXT_NewWindow(const char*) {IMPLEMENT_ME();}
+txt_window_action_t *TXT_NewWindowAction(int, const char*) {IMPLEMENT_ME();}
+void TXT_SetColor(txt_color_t, int, int, int) {IMPLEMENT_ME();}
+void TXT_SetDesktopTitle(const char*) {IMPLEMENT_ME();}
+void TXT_SetFGColor(txt_label_t*, txt_color_t) {IMPLEMENT_ME();}
+void TXT_SetLabel(txt_label_t*, const char*) {IMPLEMENT_ME();}
+void TXT_SetWindowAction(txt_window_t*, txt_horiz_align_t, TXT_UNCAST_ARG(action)) {IMPLEMENT_ME();}
+void TXT_SetWindowPosition(txt_window_t*, txt_horiz_align_t, txt_vert_align_t, int, int) {IMPLEMENT_ME();}
 void TXT_SignalConnect(TXT_UNCAST_ARG(widget), const char *signal_name, TxtWidgetSignalFunc func, void *user_data) {IMPLEMENT_ME();}
 void TXT_Sleep(int) {IMPLEMENT_ME();}
 void TXT_Shutdown(void) {IMPLEMENT_ME();}
 int TXT_GetChar(void) {IMPLEMENT_ME();}
 unsigned char *TXT_GetScreenData(void) {IMPLEMENT_ME();}
-void TXT_SetWindowTitle(char*) {IMPLEMENT_ME();}
+void TXT_SetWindowTitle(const char*) {IMPLEMENT_ME();}
 void TXT_UpdateScreen(void) {IMPLEMENT_ME();}

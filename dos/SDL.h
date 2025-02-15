@@ -23,6 +23,7 @@
 #define Uint32 uint32_t
 
 #define SDL_bool int
+#define SDL_Window int
 
 typedef struct SDL_MouseWheelEvent
 {

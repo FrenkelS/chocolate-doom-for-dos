@@ -15,7 +15,6 @@
 #ifndef __SDL_OPENGL__
 #define __SDL_OPENGL__
 
-#define SDL_Window int
 #define SDL_Renderer int
 #define SDL_Texture int
 

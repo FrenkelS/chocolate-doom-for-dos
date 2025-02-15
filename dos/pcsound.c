@@ -17,5 +17,5 @@
 #include "pcsound.h"
 
 void PCSound_SetSampleRate(int) {IMPLEMENT_ME();}
-int PCSound_Init(void*) {IMPLEMENT_ME();}
+int PCSound_Init(pcsound_callback_func) {IMPLEMENT_ME();}
 void PCSound_Shutdown(void) {IMPLEMENT_ME();}
