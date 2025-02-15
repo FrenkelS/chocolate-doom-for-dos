@@ -13,6 +13,8 @@
 //
 
 #include <dos.h>
+#include <dpmi.h>
+#include <go32.h>
 #include <string.h>
 #include <time.h>
 #include <sys/nearptr.h>
@@ -31,11 +33,14 @@
 #include "SDL_stdinc.h"
 
 
-#define SCREENWIDTH 320
-#define SCREENHEIGHT 200
+#define SDL_FALSE	0
+#define SDL_TRUE	1
 
-#define PEL_WRITE_ADR   0x3c8
-#define PEL_DATA        0x3c9
+#define SCREENWIDTH		320
+#define SCREENHEIGHT	200
+
+#define PEL_WRITE_ADR	0x3c8
+#define PEL_DATA		0x3c9
 
 
 static uint8_t *videomemory;
@@ -69,18 +74,55 @@ int SDL_Init(Uint32 flags)
 	return SDL_InitSubSystem(flags);
 }
 
+
+#define KEYBOARDINT 9
+#define KBDQUESIZE 32
+static Uint8 keyboardqueue[KBDQUESIZE];
+static int kbdtail, kbdhead;
+static SDL_bool isKeyboardIsrSet = SDL_FALSE;
+
+static _go32_dpmi_seginfo oldkeyboardisr, newkeyboardisr;
+
+static void I_KeyboardISR(void)	
+{
+	Uint8 temp;
+
+	// Get the scan code
+	keyboardqueue[kbdhead & (KBDQUESIZE - 1)] = inportb(0x60);
+	kbdhead++;
+
+	// Tell the XT keyboard controller to clear the key
+	outportb(0x61, (temp = inportb(0x61)) | 0x80);
+	outportb(0x61, temp);
+
+	// acknowledge the interrupt
+	outportb(0x20, 0x20);
+}
+
+
 int SDL_InitSubSystem(Uint32 flags)
 {
 	switch (flags)
 	{
-		case SDL_INIT_TIMER: break;
-		case SDL_INIT_AUDIO: break;
+		case SDL_INIT_TIMER:
+			// Init keyboard
+			_go32_dpmi_get_protected_mode_interrupt_vector(KEYBOARDINT, &oldkeyboardisr);
+			newkeyboardisr.pm_selector = _go32_my_cs();
+			newkeyboardisr.pm_offset = (int32_t)I_KeyboardISR;
+			_go32_dpmi_allocate_iret_wrapper(&newkeyboardisr);
+			_go32_dpmi_set_protected_mode_interrupt_vector(KEYBOARDINT, &newkeyboardisr);
+			isKeyboardIsrSet = SDL_TRUE;
+			break;
+		case SDL_INIT_AUDIO:
+			break;
 		case SDL_INIT_VIDEO:
 			__djgpp_nearptr_enable();
 			I_SetScreenMode(0x13);
 			videomemory = (uint8_t*)(0xa0000 + __djgpp_conventional_base);
 			break;
-		default: I_Error("Implement me: SDL_InitSubSystem(%i)", flags);
+		default:
+			I_Error("Implement me: SDL_InitSubSystem(%i)", flags);
+			break;
 	}
 
 	return 0;
@@ -361,10 +403,59 @@ void SDL_Delay(Uint32 ms)
 }
 
 
-// TODO Returns 1 if there is a pending event or 0 if there are none available.
+#define SC_LSHIFT		0x2a
+#define SC_RSHIFT		0x36
+
+static Uint8 scancodes[128] =
+{
+//   0   1   2   3   4   5   6   7   8   9   a   b   c   d   e   f     
+	 0, 41, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 45, 46, 42, 43, // 00
+	20, 26,  8, 21, 23, 28, 24, 12, 18, 19, 47, 48, 40,  0,  4, 22, // 10
+	 7,  9, 10, 11, 13, 14, 15, 51, 52, 53,  0, 49, 29, 27,  6, 25, // 20
+	 5, 17, 16, 54, 55, 56,  0, 85,  0, 44, 57, 58, 58, 60, 61, 62, // 30
+	63, 64, 65, 66, 67, 83, 71, 95, 96, 97, 86, 92, 93, 94, 87, 89, // 40
+	90, 91, 98, 99,  0,  0,  0, 68, 69,  0,  0,  0,  0,  0,  0,  0, // 50
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, // 60
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0  // 70
+};
+
 int SDL_PollEvent(SDL_Event *event)
 {
-	UNUSED(event);
+	while (kbdtail < kbdhead)
+	{
+		int32_t k = keyboardqueue[kbdtail & (KBDQUESIZE - 1)];
+		kbdtail++;
+
+		// extended keyboard shift key bullshit
+		if ((k & 0x7f) == SC_LSHIFT || (k & 0x7f) == SC_RSHIFT)
+		{
+			if (keyboardqueue[(kbdtail - 2) & (KBDQUESIZE - 1)] == 0xe0)
+				continue;
+			k &= 0x80;
+			k |= SC_RSHIFT;
+		}
+
+		if (k == 0xe0)
+			continue;               // special / pause keys
+		if (keyboardqueue[(kbdtail - 2) & (KBDQUESIZE - 1)] == 0xe1)
+			continue;                               // pause key bullshit
+
+		if (k == 0xc5 && keyboardqueue[(kbdtail - 2) & (KBDQUESIZE - 1)] == 0x9d)
+		{
+			event->type = SDL_KEYDOWN;
+			event->key.keysym.scancode = 72;
+			return 1;
+		}
+
+		if (k & 0x80)
+			event->type = SDL_KEYUP;
+		else
+			event->type = SDL_KEYDOWN;
+		k &= 0x7f;
+		event->key.keysym.scancode = scancodes[k];
+		return 1;
+	}
+
 	return 0;
 }
 
@@ -435,12 +526,24 @@ void SDL_QuitSubSystem(Uint32 flags)
 		default:
 			printf("Implement me: SDL_QuitSubSystem(%i)\n", flags);
 			IMPLEMENT_ME();
+			break;
 	}
 }
 
 
 void SDL_Quit(void)
 {
+	if (isKeyboardIsrSet)
+	{
+		_go32_dpmi_set_protected_mode_interrupt_vector(KEYBOARDINT, &oldkeyboardisr);
+		_go32_dpmi_free_iret_wrapper(&newkeyboardisr);
+	}
+}
+
+
+int SDL_GetModState(void)
+{
+	return 0;
 }
 
 
@@ -483,7 +586,6 @@ char *SDL_JoystickName(SDL_Joystick*) {IMPLEMENT_ME();}
 int SDL_JoystickGetButton(SDL_Joystick*, int) {IMPLEMENT_ME();}
 int SDL_JoystickGetHat(SDL_Joystick*, int) {IMPLEMENT_ME();}
 int SDL_JoystickGetAxis(SDL_Joystick*, int) {IMPLEMENT_ME();}
-int SDL_GetModState(void) {IMPLEMENT_ME();}
 void SDLNet_Init(void) {IMPLEMENT_ME();}
 UDPsocket SDLNet_UDP_Open(int) {IMPLEMENT_ME();}
 UDPpacket *SDLNet_AllocPacket(int) {IMPLEMENT_ME();}
