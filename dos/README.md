@@ -1,6 +1,9 @@
 # Chocolate Doom for DOS
 
-Run `CDOOM.EXE -timedemo demo3` to benchmark Chocolate Doom for DOS.
+* Single player only
+* Keyboard input only
+* PC Speaker sound only
 
-Run `setenvdj.bat` to set the environment variables for DJGPP.
-Then run `bdoom.bat` to build Chocolate Doom for DOS.
+Run `bdoom.bat` to build Chocolate Doom for DOS.
+Make sure the DJGPP environment variables are set.
+See `setenvdj.bat` for an example.

@@ -15,10 +15,9 @@
 #ifndef __CONFIG__
 #define __CONFIG__
 
-#define PACKAGE_NAME "Chocolate Doom for DOS"
-#define PACKAGE_STRING ""
+#define PACKAGE_STRING PACKAGE_NAME " - " __DATE__
 #define PACKAGE_TARNAME ""
 
-#define PROGRAM_PREFIX ""
+#define PROGRAM_PREFIX "C"
 
 #endif
