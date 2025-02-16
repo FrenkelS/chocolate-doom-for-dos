@@ -127,7 +127,7 @@ set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funrol
 @set GLOBOBJS=%GLOBOBJS% ../src/doom/sounds.c
 @set GLOBOBJS=%GLOBOBJS% ../src/doom/wi_stuff.c
 
-gcc %GLOBOBJS% %CFLAGS% -I. -I../opl -I../pcsound -I../src -I../textscreen -DHAVE_DIRENT_H -o CDOOM/CDOOM.EXE
+gcc %GLOBOBJS% %CFLAGS% -I. -I../opl -I../pcsound -I../src -I../textscreen -DHAVE_DIRENT_H -lemu -o CDOOM/CDOOM.EXE
 strip -s CDOOM/CDOOM.EXE
 stubedit CDOOM/CDOOM.EXE dpmi=CWSDPR0.EXE
 
