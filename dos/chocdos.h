@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "compiler.h"
+
 #define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
 
 #define IMPLEMENT_ME() I_Error("Implement me: %s: %s @ %i\n", __FILE__, __PRETTY_FUNCTION__ , __LINE__)

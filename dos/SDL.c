@@ -13,11 +13,8 @@
 //
 
 #include <dos.h>
-#include <dpmi.h>
-#include <go32.h>
 #include <string.h>
 #include <time.h>
-#include <sys/nearptr.h>
 
 #include "chocdos.h"
 
@@ -81,15 +78,15 @@ static void I_KeyboardISR(void)
 	Uint8 temp;
 
 	// Get the scan code
-	keyboardqueue[kbdhead & (KBDQUESIZE - 1)] = inportb(0x60);
+	keyboardqueue[kbdhead & (KBDQUESIZE - 1)] = inp(0x60);
 	kbdhead++;
 
 	// Tell the XT keyboard controller to clear the key
-	outportb(0x61, (temp = inportb(0x61)) | 0x80);
-	outportb(0x61, temp);
+	outp(0x61, (temp = inp(0x61)) | 0x80);
+	outp(0x61, temp);
 
 	// acknowledge the interrupt
-	outportb(0x20, 0x20);
+	outp(0x20, 0x20);
 }
 
 
@@ -99,11 +96,7 @@ int SDL_InitSubSystem(Uint32 flags)
 	{
 		case SDL_INIT_TIMER:
 			// Init keyboard
-			_go32_dpmi_get_protected_mode_interrupt_vector(KEYBOARDINT, &oldkeyboardisr);
-			newkeyboardisr.pm_selector = _go32_my_cs();
-			newkeyboardisr.pm_offset = (int32_t)I_KeyboardISR;
-			_go32_dpmi_allocate_iret_wrapper(&newkeyboardisr);
-			_go32_dpmi_set_protected_mode_interrupt_vector(KEYBOARDINT, &newkeyboardisr);
+			replaceInterrupt(oldkeyboardisr, newkeyboardisr, KEYBOARDINT, I_KeyboardISR);
 			isKeyboardIsrSet = SDL_TRUE;
 			break;
 		case SDL_INIT_AUDIO:
@@ -363,12 +356,12 @@ int SDL_SetPaletteColors(SDL_Palette *palette, const SDL_Color *colors, int firs
 
 	UNUSED(palette);
 
-	outportb(PEL_WRITE_ADR, 0);
+	outp(PEL_WRITE_ADR, 0);
 	for (i = firstcolor; i < ncolors; i++)
 	{
-		outportb(PEL_DATA, colors[i].r >> 2);
-		outportb(PEL_DATA, colors[i].g >> 2);
-		outportb(PEL_DATA, colors[i].b >> 2);
+		outp(PEL_DATA, colors[i].r >> 2);
+		outp(PEL_DATA, colors[i].g >> 2);
+		outp(PEL_DATA, colors[i].b >> 2);
 	}
 
 	return 0;
@@ -528,8 +521,7 @@ void SDL_Quit(void)
 {
 	if (isKeyboardIsrSet)
 	{
-		_go32_dpmi_set_protected_mode_interrupt_vector(KEYBOARDINT, &oldkeyboardisr);
-		_go32_dpmi_free_iret_wrapper(&newkeyboardisr);
+		restoreInterrupt(KEYBOARDINT, oldkeyboardisr, newkeyboardisr);
 	}
 }
 
