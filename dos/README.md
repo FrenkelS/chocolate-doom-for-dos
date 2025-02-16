@@ -7,6 +7,7 @@ Download Chocolate Doom for DOS [here](https://github.com/FrenkelS/chocolate-doo
 * Single player only
 * Keyboard input only
 * PC Speaker sound only
+* The results of `-timedemo` are shown in video mode
 
 Run `bdoom.bat` to build Chocolate Doom for DOS.
 Make sure the DJGPP environment variables are set.
