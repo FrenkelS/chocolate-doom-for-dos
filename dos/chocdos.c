@@ -12,8 +12,6 @@
 // GNU General Public License for more details.
 //
 
-#include <dos.h>
-
 #include "chocdos.h"
 
 void I_SetScreenMode(uint16_t mode)

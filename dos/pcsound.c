@@ -16,6 +16,72 @@
 
 #include "pcsound.h"
 
-void PCSound_SetSampleRate(int) {IMPLEMENT_ME();}
-int PCSound_Init(pcsound_callback_func) {IMPLEMENT_ME();}
-void PCSound_Shutdown(void) {IMPLEMENT_ME();}
+#include "SDL.h"
+
+#include "a_inter.h"
+#include "a_taskmn.h"
+
+
+#define SND_TICRATE     140     // tic rate for updating sound
+
+#define TIMER_FREQ 1193181 /* hz */
+
+static SDL_bool PCFX_Installed;
+
+static task *PCFX_ServiceTask;
+static pcsound_callback_func func;
+
+static int PCFX_LastSample;
+
+void PCSound_SetSampleRate(int rate)
+{
+	UNUSED(rate);
+}
+
+
+static void PCFX_Service(void)
+{
+	int duration;
+	int freq;
+
+	func(&duration, &freq);
+
+	if (freq != PCFX_LastSample)
+	{
+		PCFX_LastSample = freq;
+		if (freq)
+		{
+			int value = TIMER_FREQ / freq;
+			outp(0x43, 0xb6);
+			outp(0x42, LOBYTE(value));
+			outp(0x42, HIBYTE(value));
+			outp(0x61, inp(0x61) | 0x3);
+		} else
+			outp(0x61, inp(0x61) & 0xfc);
+	}
+}
+
+
+int PCSound_Init(pcsound_callback_func callback_func)
+{
+	PCFX_ServiceTask = TS_ScheduleTask(PCFX_Service, SND_TICRATE, 2);
+	func = callback_func;
+	PCFX_Installed = SDL_TRUE;
+	return 1;
+}
+
+
+void PCSound_Shutdown(void)
+{
+	if (PCFX_Installed)
+	{
+		uint32_t flags = DisableInterrupts();
+
+		// Turn off speaker
+		outp(0x61, inp(0x61) & 0xfc);
+
+		RestoreInterrupts(flags);
+
+		TS_Terminate(PCFX_ServiceTask);
+	}
+}

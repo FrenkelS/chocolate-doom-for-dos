@@ -154,7 +154,7 @@ void Mix_SetMusicPosition(int);
 #define SDL_mutex int
 
 int SDL_LockMutex(SDL_mutex*);
-void SDL_UnlockMutex(SDL_mutex*);
+int SDL_UnlockMutex(SDL_mutex*);
 SDL_mutex *SDL_CreateMutex(void);
 
 #define AUDIO_U8 0

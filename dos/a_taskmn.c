@@ -29,9 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
    (c) Copyright 1994 James R. Dose.  All Rights Reserved.
 **********************************************************************/
 
-#include <conio.h>
-#include <dos.h>
-
 #include "chocdos.h"
 
 #include "SDL.h"
@@ -96,9 +93,6 @@ static void TS_FreeTaskList(void)
 
    Sets the rate of the 8253 timer.
 ---------------------------------------------------------------------*/
-
-#define LOBYTE(w)	(((uint8_t *)&w)[0])
-#define HIBYTE(w)	(((uint8_t *)&w)[1])
 
 static void TS_SetClockSpeed(int32_t speed)
 {
@@ -274,6 +268,29 @@ static void TS_AddTask(task *node)
 
 
 /*---------------------------------------------------------------------
+   Function: TS_Dispatch
+
+   Begins processing of all inactive tasks.
+---------------------------------------------------------------------*/
+
+static void TS_Dispatch(void)
+{
+	task *ptr;
+
+	uint32_t flags = DisableInterrupts();
+
+	ptr = TaskList->next;
+	while (ptr != TaskList)
+	{
+		ptr->active = SDL_TRUE;
+		ptr = ptr->next;
+	}
+
+	RestoreInterrupts(flags);
+}
+
+
+/*---------------------------------------------------------------------
    Function: TS_ScheduleTask
 
    Schedules a new task for processing.
@@ -297,6 +314,8 @@ task *TS_ScheduleTask(void (*Function)(void), int32_t rate, int32_t priority)
 
 		TS_AddTask(ptr);
 	}
+
+	TS_Dispatch();
 
 	return ptr;
 }
@@ -334,29 +353,6 @@ void TS_Terminate(task *NodeToRemove)
 		}
 
 		ptr = next;
-	}
-
-	RestoreInterrupts(flags);
-}
-
-
-/*---------------------------------------------------------------------
-   Function: TS_Dispatch
-
-   Begins processing of all inactive tasks.
----------------------------------------------------------------------*/
-
-void TS_Dispatch(void)
-{
-	task *ptr;
-
-	uint32_t flags = DisableInterrupts();
-
-	ptr = TaskList->next;
-	while (ptr != TaskList)
-	{
-		ptr->active = SDL_TRUE;
-		ptr = ptr->next;
 	}
 
 	RestoreInterrupts(flags);

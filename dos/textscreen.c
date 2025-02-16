@@ -12,7 +12,6 @@
 // GNU General Public License for more details.
 //
 
-#include <dos.h>
 #include <sys/nearptr.h>
 
 #include "chocdos.h"

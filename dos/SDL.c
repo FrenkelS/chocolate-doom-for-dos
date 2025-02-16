@@ -12,7 +12,6 @@
 // GNU General Public License for more details.
 //
 
-#include <dos.h>
 #include <string.h>
 
 #include "chocdos.h"
@@ -106,7 +105,6 @@ int SDL_InitSubSystem(Uint32 flags)
 		case SDL_INIT_TIMER:
 			// Init timer
 			timerTask = TS_ScheduleTask(I_TimerISR, TIMER_TICRATE, 0); // max priority
-			TS_Dispatch();
 			isTimerSet = SDL_TRUE;
 
 			// Init keyboard
@@ -556,6 +554,26 @@ int SDL_GetModState(void)
 }
 
 
+SDL_mutex *SDL_CreateMutex(void)
+{
+	return malloc(sizeof(SDL_mutex));
+}
+
+
+int SDL_LockMutex(SDL_mutex *mutex)
+{
+	UNUSED(mutex);
+	return 0;
+}
+
+
+int SDL_UnlockMutex(SDL_mutex *mutex)
+{
+	UNUSED(mutex);
+	return 0;
+}
+
+
 char* SDL_GetError(void) {IMPLEMENT_ME();}
 int SDL_PeepEvents(void*, int, int, int, int) {IMPLEMENT_ME();}
 void SDL_ShowSimpleMessageBox(int, char*, char*, char*) {IMPLEMENT_ME();}
@@ -618,9 +636,6 @@ void SDL_UnlockAudio(void) {IMPLEMENT_ME();}
 void Mix_PauseMusic(void) {IMPLEMENT_ME();}
 void Mix_ResumeMusic(void) {IMPLEMENT_ME();}
 void Mix_SetMusicPosition(int) {IMPLEMENT_ME();}
-int SDL_LockMutex(SDL_mutex*) {IMPLEMENT_ME();}
-void SDL_UnlockMutex(SDL_mutex*) {IMPLEMENT_ME();}
-SDL_mutex *SDL_CreateMutex(void) {IMPLEMENT_ME();}
 void Mix_HaltChannel(int) {IMPLEMENT_ME();}
 int SDL_BuildAudioCVT(void*, int, int, int, int, int, int) {IMPLEMENT_ME();}
 void SDL_ConvertAudio(void*) {IMPLEMENT_ME();}
