@@ -17,17 +17,8 @@
 
 #include "chocdos.h"
 
-#include "SDL.h"
 #include "textscreen.h"
 #include "txt_main.h"
-
-
-static void I_SetScreenMode(uint16_t mode)
-{
-	union REGS regs;
-	regs.w.ax = mode;
-	int386(0x10, &regs, &regs);
-}
 
 
 int TXT_Init(void)

@@ -12,18 +12,13 @@
 // GNU General Public License for more details.
 //
 
-#ifndef __CHOCDOS__
-#define __CHOCDOS__
+#include <dos.h>
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "chocdos.h"
 
-#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
-
-#define IMPLEMENT_ME() I_Error("Implement me: %s: %s @ %i\n", __FILE__, __PRETTY_FUNCTION__ , __LINE__)
-
-void I_Error (const char *error, ...);
-void I_SetScreenMode(uint16_t mode);
-
-#endif
+void I_SetScreenMode(uint16_t mode)
+{
+	union REGS regs;
+	regs.w.ax = mode;
+	int386(0x10, &regs, &regs);
+}

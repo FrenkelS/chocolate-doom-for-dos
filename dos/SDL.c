@@ -45,13 +45,6 @@
 
 static uint8_t *videomemory;
 
-static void I_SetScreenMode(uint16_t mode)
-{
-	union REGS regs;
-	regs.w.ax = mode;
-	int386(0x10, &regs, &regs);
-}
-
 
 char *SDL_GetPrefPath(const char *org, const char *app)
 {
