@@ -28,6 +28,9 @@
 #define SDL_Scancode int
 #define SDL_Keycode Sint32
 
+#define SDL_FALSE	0
+#define SDL_TRUE	1
+
 typedef struct SDL_MouseWheelEvent
 {
 	Sint32 y;

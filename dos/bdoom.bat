@@ -6,6 +6,7 @@ set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funrol
 @rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
 @set GLOBOBJS=
+@set GLOBOBJS=%GLOBOBJS% a_taskmn.c
 @set GLOBOBJS=%GLOBOBJS% chocdos.c
 @set GLOBOBJS=%GLOBOBJS% opl.c
 @set GLOBOBJS=%GLOBOBJS% pcsound.c

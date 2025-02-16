@@ -14,7 +14,6 @@
 
 #include <dos.h>
 #include <string.h>
-#include <time.h>
 
 #include "chocdos.h"
 
@@ -29,9 +28,8 @@
 #include "SDL_opengl.h"
 #include "SDL_stdinc.h"
 
+#include "a_taskmn.h"
 
-#define SDL_FALSE	0
-#define SDL_TRUE	1
 
 #define SCREENWIDTH		320
 #define SCREENHEIGHT	200
@@ -59,9 +57,14 @@ SDL_bool SDL_SetHint(const char *name, const char *value)
 }
 
 
-int SDL_Init(Uint32 flags)
+#define TIMER_TICRATE 1000
+static task *timerTask;
+static volatile Uint32 ticcount;
+static SDL_bool isTimerSet;
+
+static void I_TimerISR(void)
 {
-	return SDL_InitSubSystem(flags);
+	ticcount++;
 }
 
 
@@ -90,11 +93,22 @@ static void I_KeyboardISR(void)
 }
 
 
+int SDL_Init(Uint32 flags)
+{
+	return SDL_InitSubSystem(flags);
+}
+
+
 int SDL_InitSubSystem(Uint32 flags)
 {
 	switch (flags)
 	{
 		case SDL_INIT_TIMER:
+			// Init timer
+			timerTask = TS_ScheduleTask(I_TimerISR, TIMER_TICRATE, 0); // max priority
+			TS_Dispatch();
+			isTimerSet = SDL_TRUE;
+
 			// Init keyboard
 			replaceInterrupt(oldkeyboardisr, newkeyboardisr, KEYBOARDINT, I_KeyboardISR);
 			isKeyboardIsrSet = SDL_TRUE;
@@ -385,7 +399,11 @@ Uint32 SDL_GetRelativeMouseState(int *x, int *y)
 
 void SDL_Delay(Uint32 ms)
 {
-	//TODO delay(ms);
+	Uint32 wait = ticcount + ms;
+	while (ticcount < wait)
+	{
+		// do nothing
+	}
 }
 
 
@@ -448,7 +466,7 @@ int SDL_PollEvent(SDL_Event *event)
 
 Uint32 SDL_GetTicks(void)
 {
-	return clock() * 1000 / CLOCKS_PER_SEC;
+	return ticcount;
 }
 
 
@@ -519,6 +537,12 @@ void SDL_QuitSubSystem(Uint32 flags)
 
 void SDL_Quit(void)
 {
+	if (isTimerSet) {
+		TS_Terminate(timerTask);
+		timerTask = NULL;
+		TS_Shutdown();
+	}
+
 	if (isKeyboardIsrSet)
 	{
 		restoreInterrupt(KEYBOARDINT, oldkeyboardisr, newkeyboardisr);
