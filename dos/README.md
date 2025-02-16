@@ -1,5 +1,7 @@
 # Chocolate Doom for DOS
 
+Download Chocolate Doom for DOS [here](https://github.com/FrenkelS/chocolate-doom-for-dos/releases).
+
 * MCGA compatible
 
 * Single player only
