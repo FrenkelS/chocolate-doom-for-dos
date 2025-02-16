@@ -1,5 +1,7 @@
 # Chocolate Doom for DOS
 
+* MCGA compatible
+
 * Single player only
 * Keyboard input only
 * PC Speaker sound only
