@@ -15,6 +15,7 @@
 #ifndef __CONFIG__
 #define __CONFIG__
 
+#define PACKAGE_NAME "Chocolate " GAME " for DOS"
 #define PACKAGE_STRING PACKAGE_NAME " - " __DATE__
 #define PACKAGE_TARNAME ""
 
