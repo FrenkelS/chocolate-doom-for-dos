@@ -17,6 +17,7 @@
 #include "chocdos.h"
 
 #include "textscreen.h"
+#include "txt_io.h"
 #include "txt_main.h"
 
 
@@ -52,13 +53,62 @@ int TXT_GetChar(void)
 
 void TXT_Shutdown(void)
 {
+	TXT_GotoXY(0, 23);
+	printf("\n");
+}
+
+
+static int bgcolor;
+static txt_color_t fgcolor;
+static int cur_x;
+static int cur_y;
+
+void TXT_BGColor(int color, int blinking)
+{
+	UNUSED(blinking);
+
+	bgcolor = color;
+}
+
+
+void TXT_FGColor(txt_color_t color)
+{
+	fgcolor = color;
+}
+
+
+void TXT_GotoXY(int x, int y)
+{
 	union REGS regs;
 	regs.h.ah = 2;
 	regs.h.bh = 0;
-	regs.h.dl = 0;
-	regs.h.dh = 23;
+	regs.h.dl = x;
+	regs.h.dh = y;
 	int386(0x10, &regs, &regs); // Set text pos
-	printf ("\n");
+
+	cur_x = x;
+	cur_y = y;
+}
+
+
+void TXT_Puts(const char *s)
+{
+	printf("%s\n", s);
+}
+
+
+void TXT_PutChar(int c)
+{
+	union REGS regs;
+	regs.h.ah = 9;
+	regs.h.al = c;
+	regs.h.bh = 0;
+	regs.h.bl = (bgcolor << 4) | fgcolor;
+	regs.w.cx = 1;
+	int386(0x10, &regs, &regs);
+
+	cur_x++;
+	TXT_GotoXY(cur_x, cur_y);
 }
 
 
