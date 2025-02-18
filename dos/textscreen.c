@@ -112,6 +112,13 @@ void TXT_PutChar(int c)
 }
 
 
+void TXT_GetXY(int *x, int *y)
+{
+	*x = cur_x;
+	*y = cur_y;
+}
+
+
 void TXT_AddWidget(TXT_UNCAST_ARG(table), TXT_UNCAST_ARG(widget)) {IMPLEMENT_ME();}
 void TXT_ClearTable(TXT_UNCAST_ARG(table)) {IMPLEMENT_ME();}
 void TXT_CloseWindow(txt_window_t*) {IMPLEMENT_ME();}
