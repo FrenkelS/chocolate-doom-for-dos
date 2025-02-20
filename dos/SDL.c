@@ -612,10 +612,9 @@ void SDL_BlitSurface(SDL_Surface *src, const SDL_Rect *srcrect, SDL_Surface *dst
 	int i;
 	int p;
 	uint8_t *s;
-	uint8_t *d;
+	volatile uint8_t *d;
 	union REGS regs;
 
-	UNUSED(srcrect);
 	UNUSED(dst);
 	UNUSED(dstrect);
 
@@ -624,11 +623,11 @@ void SDL_BlitSurface(SDL_Surface *src, const SDL_Rect *srcrect, SDL_Surface *dst
 	for (i = 0; i < 4; i++)
 	{
 		outp(SC_INDEX + 1, p);
-		s = src->pixels;
-		d = videomemory;
-		for (y = 0; y < HR_SCREENHEIGHT; y++)
+		s = &src->pixels[srcrect->y * HR_SCREENWIDTH + srcrect->x];
+		d = &videomemory[(srcrect->y * HR_SCREENWIDTH + srcrect->x) / 8];
+		for (y = srcrect->y; y < srcrect->y + srcrect->h; y++)
 		{
-			for (x = 0; x < HR_SCREENWIDTH / 8; x++)
+			for (x = srcrect->x / 8; x < (srcrect->x + srcrect->w) / 8; x++)
 			{
 				uint8_t pixel7 = *s++;
 				uint8_t pixel6 = *s++;
@@ -648,6 +647,8 @@ void SDL_BlitSurface(SDL_Surface *src, const SDL_Rect *srcrect, SDL_Surface *dst
 				     | (((pixel1 & p) >> i) << 1)
 				     | (((pixel0 & p) >> i) << 0);
 			}
+			s += HR_SCREENWIDTH - srcrect->w;
+			d += (HR_SCREENWIDTH - srcrect->w) / 8;
 		}
 		p <<= 1;
 	}

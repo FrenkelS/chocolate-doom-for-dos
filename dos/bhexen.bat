@@ -2,7 +2,7 @@ if "%DJDIR%" == "" goto error
 
 mkdir CHEXEN
 
-set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
+set CFLAGS=-Ofast -march=i386 -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2
 @rem set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
 @rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
