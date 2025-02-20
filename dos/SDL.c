@@ -36,6 +36,9 @@
 #define HR_SCREENWIDTH	640
 #define HR_SCREENHEIGHT	480
 
+#define SC_INDEX	0x3c4
+#define SC_MAPMASK	2
+
 #define PEL_WRITE_ADR	0x3c8
 #define PEL_DATA		0x3c9
 
@@ -606,22 +609,47 @@ void SDL_BlitSurface(SDL_Surface *src, const SDL_Rect *srcrect, SDL_Surface *dst
 {
 	int x;
 	int y;
+	int i;
+	int p;
+	uint8_t *s;
+	uint8_t *d;
 	union REGS regs;
 
+	UNUSED(srcrect);
 	UNUSED(dst);
 	UNUSED(dstrect);
 
-	for (y = srcrect->y; y < srcrect->y + srcrect->h; y++)
+	outp(SC_INDEX, SC_MAPMASK);
+	p = 1;
+	for (i = 0; i < 4; i++)
 	{
-		for (x = srcrect->x; x < srcrect->x + srcrect->w; x++)
+		outp(SC_INDEX + 1, p);
+		s = src->pixels;
+		d = videomemory;
+		for (y = 0; y < HR_SCREENHEIGHT; y++)
 		{
-			regs.h.ah = 0x0c;
-			regs.h.bh = 0;
-			regs.h.al = src->pixels[y * HR_SCREENWIDTH + x];
-			regs.w.cx = x;
-			regs.w.dx = y;
-			int386(0x10, &regs, &regs); // set pixel
+			for (x = 0; x < HR_SCREENWIDTH / 8; x++)
+			{
+				uint8_t pixel7 = *s++;
+				uint8_t pixel6 = *s++;
+				uint8_t pixel5 = *s++;
+				uint8_t pixel4 = *s++;
+				uint8_t pixel3 = *s++;
+				uint8_t pixel2 = *s++;
+				uint8_t pixel1 = *s++;
+				uint8_t pixel0 = *s++;
+
+				*d++ = (((pixel7 & p) >> i) << 7)
+				     | (((pixel6 & p) >> i) << 6)
+				     | (((pixel5 & p) >> i) << 5)
+				     | (((pixel4 & p) >> i) << 4)
+				     | (((pixel3 & p) >> i) << 3)
+				     | (((pixel2 & p) >> i) << 2)
+				     | (((pixel1 & p) >> i) << 1)
+				     | (((pixel0 & p) >> i) << 0);
+			}
 		}
+		p <<= 1;
 	}
 }
 
