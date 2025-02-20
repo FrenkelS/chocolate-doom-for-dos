@@ -74,6 +74,40 @@ typedef struct SDL_Event
 	SDL_MouseWheelEvent wheel;
 } SDL_Event;
 
+#define SDL_Palette int
+
+typedef struct SDL_PixelFormat
+{
+	SDL_Palette *palette;
+} SDL_PixelFormat;
+
+typedef struct SDL_Surface
+{
+	SDL_PixelFormat *format;
+	uint8_t *pixels;
+	int pitch;
+} SDL_Surface;
+
+typedef struct SDL_Rect
+{
+	int x;
+	int y;
+	int w;
+	int h;
+} SDL_Rect;
+
+typedef struct SDL_Color
+{
+	Uint8 r;
+	Uint8 g;
+	Uint8 b;
+	Uint8 a;
+} SDL_Color;
+
+#define SDLK_BACKSPACE 6
+#define SDLK_RETURN 7
+#define SDLK_ESCAPE 8
+
 #define AUDIO_S16SYS 0
 #define SDL_AUDIO_ALLOW_FREQUENCY_CHANGE 0
 
@@ -181,5 +215,18 @@ void Mix_SetPanning(int, int, int);
 void Mix_PlayChannel(int, void*, int);
 int Mix_Playing(int);
 void Mix_AllocateChannels(int);
+
+SDL_Window *SDL_CreateWindow(const char*, int, int, int, int, Uint32);
+SDL_Surface *SDL_CreateRGBSurface(Uint32, int, int, int, Uint32, Uint32, Uint32, Uint32);
+void SDL_FreeSurface(SDL_Surface*);
+int SDL_FillRect(SDL_Surface*, const SDL_Rect*, Uint32);
+int SDL_LockSurface(SDL_Surface*);
+void SDL_UnlockSurface(SDL_Surface*);
+void SDL_BlitSurface(SDL_Surface*, const SDL_Rect*, SDL_Surface*, SDL_Rect*);
+SDL_Surface *SDL_GetWindowSurface(SDL_Window*);
+void SDL_UpdateWindowSurfaceRects(SDL_Window*, const SDL_Rect*, int);
+void SDL_UpdateWindowSurface(SDL_Window*);
+int SDL_PollEvent(SDL_Event*);
+int SDL_SetPaletteColors(SDL_Palette*, const SDL_Color*, int, int);
 
 #endif

@@ -33,6 +33,9 @@
 #define SCREENWIDTH		320
 #define SCREENHEIGHT	200
 
+#define HR_SCREENWIDTH	640
+#define HR_SCREENHEIGHT	480
+
 #define PEL_WRITE_ADR	0x3c8
 #define PEL_DATA		0x3c9
 
@@ -115,7 +118,6 @@ int SDL_InitSubSystem(Uint32 flags)
 			break;
 		case SDL_INIT_VIDEO:
 			__djgpp_nearptr_enable();
-			I_SetScreenMode(0x13);
 			videomemory = (uint8_t*)(0xa0000 + __djgpp_conventional_base);
 			break;
 		default:
@@ -295,9 +297,31 @@ SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth
 	UNUSED(Bmask);
 	UNUSED(Amask);
 
+	if (width == SCREENWIDTH && height == SCREENHEIGHT)
+	{
+		I_SetScreenMode(0x13);
+	}
+	else if (width == HR_SCREENWIDTH && height == HR_SCREENHEIGHT)
+	{
+		int i;
+		union REGS regs;
+
+		I_SetScreenMode(0x12);
+
+		// Set palette registers to point into color registers
+		for (i = 0; i < 16; i++)
+		{
+			regs.w.ax = 0x1000;
+			regs.h.bl = i;
+			regs.h.bh = i;
+			int386(0x10, &regs, &regs);
+		}
+	}
+
 	surface = malloc(sizeof(SDL_Surface));
 	surface->format = malloc(sizeof(SDL_PixelFormat));
 	surface->pixels = malloc(width * height * depth / 8);
+	surface->pitch  = width;
 	return surface;
 }
 
@@ -314,8 +338,6 @@ int SDL_FillRect(SDL_Surface *dst, const SDL_Rect *rect, Uint32 color)
 //for argbbuffer
 SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void *pixels, int width, int height, int depth, int pitch, Uint32 format)
 {
-	SDL_Surface *surface;
-
 	UNUSED(pixels);
 	UNUSED(width);
 	UNUSED(height);
@@ -323,8 +345,7 @@ SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void *pixels, int width, int hei
 	UNUSED(pitch);
 	UNUSED(format);
 
-	surface = malloc(sizeof(SDL_Surface));
-	return surface;
+	return malloc(sizeof(SDL_Surface));
 }
 
 
@@ -571,6 +592,64 @@ int SDL_UnlockMutex(SDL_mutex *mutex)
 {
 	UNUSED(mutex);
 	return 0;
+}
+
+
+SDL_Surface *SDL_GetWindowSurface(SDL_Window *window)
+{
+	UNUSED(window);
+	return NULL;
+}
+
+
+void SDL_BlitSurface(SDL_Surface *src, const SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect)
+{
+	int x;
+	int y;
+	union REGS regs;
+
+	UNUSED(dst);
+	UNUSED(dstrect);
+
+	for (y = srcrect->y; y < srcrect->y + srcrect->h; y++)
+	{
+		for (x = srcrect->x; x < srcrect->x + srcrect->w; x++)
+		{
+			regs.h.ah = 0x0c;
+			regs.h.bh = 0;
+			regs.h.al = src->pixels[y * HR_SCREENWIDTH + x];
+			regs.w.cx = x;
+			regs.w.dx = y;
+			int386(0x10, &regs, &regs); // set pixel
+		}
+	}
+}
+
+
+void SDL_UpdateWindowSurfaceRects(SDL_Window *window, const SDL_Rect *rects, int numrects)
+{
+	UNUSED(window);
+	UNUSED(rects);
+	UNUSED(numrects);
+}
+
+
+int SDL_LockSurface(SDL_Surface *surface)
+{
+	UNUSED(surface);
+	return 0;
+}
+
+
+void SDL_UnlockSurface(SDL_Surface *surface)
+{
+	UNUSED(surface);
+}
+
+
+void SDL_UpdateWindowSurface(SDL_Window *window)
+{
+	UNUSED(window);
 }
 
 

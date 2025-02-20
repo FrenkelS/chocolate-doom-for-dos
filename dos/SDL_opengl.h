@@ -63,53 +63,19 @@ typedef struct SDL_DisplayMode
 	int refresh_rate;
 } SDL_DisplayMode;
 
-typedef struct SDL_Rect
-{
-	int x;
-	int y;
-	int w;
-	int h;
-} SDL_Rect;
-
 typedef struct SDL_RendererInfo
 {
 	int max_texture_width;
 	int max_texture_height;
 } SDL_RendererInfo;
 
-typedef struct SDL_Color
-{
-	Uint8 r;
-	Uint8 g;
-	Uint8 b;
-	Uint8 a;
-} SDL_Color;
-
-#define SDL_Palette int
-
-typedef struct SDL_PixelFormat
-{
-	SDL_Palette *palette;
-} SDL_PixelFormat;
-
-typedef struct SDL_Surface
-{
-	SDL_PixelFormat *format;
-	uint8_t *pixels;
-	int pitch;
-} SDL_Surface;
-
 
 SDL_Renderer *SDL_CreateRenderer(SDL_Window*, int, Uint32);
-SDL_Surface *SDL_CreateRGBSurface(Uint32, int, int, int, Uint32, Uint32, Uint32, Uint32);
 SDL_Surface *SDL_CreateRGBSurfaceFrom(void*, int, int, int, int, Uint32, Uint32, Uint32, Uint32);
 SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void*, int, int, int, int, Uint32);
 SDL_Texture* SDL_CreateTexture(SDL_Renderer*, Uint32, int, int, int);
-SDL_Window *SDL_CreateWindow(const char*, int, int, int, int, Uint32);
 void SDL_DestroyRenderer(SDL_Renderer*);
 void SDL_DestroyTexture(SDL_Texture*);
-int SDL_FillRect(SDL_Surface*, const SDL_Rect*, Uint32);
-void SDL_FreeSurface(SDL_Surface*);
 int SDL_GetCurrentDisplayMode(int, SDL_DisplayMode*);
 int SDL_GetDisplayBounds(int, SDL_Rect*);
 int SDL_GetNumVideoDisplays(void);
@@ -121,14 +87,12 @@ int SDL_GetWindowID(SDL_Window*);
 void SDL_GetWindowSize(SDL_Window*, int*, int*);
 int SDL_LockTexture(SDL_Texture*, const SDL_Rect*, void**, int*);
 int SDL_LowerBlit(SDL_Surface*, SDL_Rect*, SDL_Surface*, SDL_Rect*);
-int SDL_PollEvent(SDL_Event*);
 void SDL_PumpEvents(void);
 int SDL_RenderClear(SDL_Renderer*);
 int SDL_RenderCopy(SDL_Renderer*, SDL_Texture*, const SDL_Rect*, const SDL_Rect*);
 void SDL_RenderPresent(SDL_Renderer*);
 int SDL_RenderSetIntegerScale(SDL_Renderer*, SDL_bool);
 int SDL_RenderSetLogicalSize(SDL_Renderer*, int, int);
-int SDL_SetPaletteColors(SDL_Palette*, const SDL_Color*, int, int);
 int SDL_SetRelativeMouseMode(SDL_bool);
 int SDL_SetRenderDrawColor(SDL_Renderer*, Uint8, Uint8, Uint8, Uint8);
 int SDL_SetRenderTarget(SDL_Renderer*, SDL_Texture*);
