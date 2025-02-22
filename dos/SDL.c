@@ -109,6 +109,8 @@ int SDL_InitSubSystem(Uint32 flags)
 	switch (flags)
 	{
 		case SDL_INIT_TIMER:
+			__djgpp_nearptr_enable();
+
 			// Init timer
 			timerTask = TS_ScheduleTask(I_TimerISR, TIMER_TICRATE, 0); // max priority
 			isTimerSet = SDL_TRUE;
@@ -120,7 +122,6 @@ int SDL_InitSubSystem(Uint32 flags)
 		case SDL_INIT_AUDIO:
 			break;
 		case SDL_INIT_VIDEO:
-			__djgpp_nearptr_enable();
 			videomemory = (uint8_t*)(0xa0000 + __djgpp_conventional_base);
 			break;
 		default:
