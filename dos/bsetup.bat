@@ -5,7 +5,7 @@ mkdir CHERETIC
 mkdir CHEXEN
 mkdir CSTRIFE
 
-set CFLAGS=-Os -march=i386 -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2
+set CFLAGS=-O1 -march=i386 -flto -fwhole-program -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
 @rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
 @set GLOBOBJS=
