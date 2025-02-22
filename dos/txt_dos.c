@@ -19,6 +19,8 @@
 #include "txt_main.h"
 #include "doomkeys.h"
 
+#include "SDL_keycode.h"
+
 SDL_Window *TXT_SDLWindow;
 
 static unsigned char *screendata;
@@ -64,7 +66,17 @@ int TXT_GetChar(void)
 	{
 		if (ev.type == SDL_KEYDOWN)
 		{
-			return scancode_translate_table[ev.key.keysym.scancode];
+			switch (ev.key.keysym.scancode)
+			{
+				case SDL_SCANCODE_LCTRL:
+					return KEY_RCTRL;
+				case SDL_SCANCODE_RSHIFT:
+					return KEY_RSHIFT;
+				case SDL_SCANCODE_LALT:
+					return KEY_LALT;
+				default:
+					return scancode_translate_table[ev.key.keysym.scancode];
+			}
 		}
 	}
 
