@@ -16,6 +16,6 @@
 #define __SDL_FILESYSTEM__
 
 char *SDL_GetPrefPath(const char*, const char*);
-void SDL_free(char*);
+void SDL_free(void*);
 
 #endif

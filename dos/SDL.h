@@ -15,6 +15,8 @@
 #ifndef __SDL__
 #define __SDL__
 
+#include <stdarg.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #define Uint8  uint8_t
@@ -31,10 +33,30 @@
 #define SDL_FALSE	0
 #define SDL_TRUE	1
 
+#define SDL_Joystick int
+#define SDL_JoystickID int
+
 typedef struct SDL_MouseWheelEvent
 {
 	Sint32 y;
 } SDL_MouseWheelEvent;
+
+typedef struct SDL_JoyButtonEvent
+{
+	SDL_JoystickID which;
+	Uint8 button;
+} SDL_JoyButtonEvent;
+
+typedef struct SDL_ControllerAxisEvent
+{
+	Uint8 axis;
+	Sint16 value;
+} SDL_ControllerAxisEvent;
+
+typedef struct SDL_ControllerButtonEvent
+{
+	Uint8 button;
+} SDL_ControllerButtonEvent;
 
 typedef struct SDL_Keysym
 {
@@ -72,6 +94,9 @@ typedef struct SDL_Event
 	SDL_TextInputEvent text;
 	SDL_MouseButtonEvent button;
 	SDL_MouseWheelEvent wheel;
+	SDL_JoyButtonEvent jbutton; 
+	SDL_ControllerAxisEvent caxis;
+	SDL_ControllerButtonEvent cbutton;
 } SDL_Event;
 
 #define SDL_Palette int
@@ -126,13 +151,16 @@ typedef struct SDL_Color
 #define SDL_MOUSEBUTTONDOWN	0x401
 #define SDL_MOUSEBUTTONUP	0x402
 #define SDL_MOUSEWHEEL		0x403
+#define SDL_JOYBUTTONDOWN	0x603
 
 #define SDL_ENABLE 1
+#define SDL_DISABLE 0
 
-#define SDL_HAT_LEFT 0
-#define SDL_HAT_RIGHT 0
-#define SDL_HAT_DOWN 0
-#define SDL_HAT_UP 0
+#define SDL_HAT_CENTERED	0x00
+#define SDL_HAT_UP			0x01
+#define SDL_HAT_RIGHT		0x02
+#define SDL_HAT_DOWN		0x04
+#define SDL_HAT_LEFT		0x08
 
 #define SDL_INIT_TIMER			0x00000001u
 #define SDL_INIT_AUDIO			0x00000010u
@@ -218,6 +246,8 @@ void Mix_AllocateChannels(int);
 
 SDL_Window *SDL_CreateWindow(const char*, int, int, int, int, Uint32);
 SDL_Surface *SDL_CreateRGBSurface(Uint32, int, int, int, Uint32, Uint32, Uint32, Uint32);
+SDL_Surface *SDL_CreateRGBSurfaceFrom(void*, int, int, int, int, Uint32, Uint32, Uint32, Uint32);
+void SDL_SetWindowIcon(SDL_Window*, SDL_Surface*);
 void SDL_FreeSurface(SDL_Surface*);
 int SDL_FillRect(SDL_Surface*, const SDL_Rect*, Uint32);
 int SDL_LockSurface(SDL_Surface*);

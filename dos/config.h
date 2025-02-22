@@ -16,7 +16,8 @@
 #define __CONFIG__
 
 #define PACKAGE_NAME "Chocolate " GAME " for DOS"
-#define PACKAGE_STRING PACKAGE_NAME " - " __DATE__
+#define PACKAGE_VERSION __DATE__
+#define PACKAGE_STRING PACKAGE_NAME " - " PACKAGE_VERSION
 #define PACKAGE_TARNAME ""
 
 #define PROGRAM_PREFIX "C"

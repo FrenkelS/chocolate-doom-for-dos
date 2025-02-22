@@ -447,6 +447,9 @@ static Uint8 scancodes[128] =
 
 int SDL_PollEvent(SDL_Event *event)
 {
+	if (!event)
+		return kbdtail < kbdhead;
+
 	while (kbdtail < kbdhead)
 	{
 		int32_t k = keyboardqueue[kbdtail & (KBDQUESIZE - 1)];
@@ -699,7 +702,7 @@ int *Mix_LoadMUS(const char*) {IMPLEMENT_ME();}
 int Mix_PlayingMusic(void) {IMPLEMENT_ME();}
 void Mix_RegisterEffect(int, void*, void*, void*) {IMPLEMENT_ME();}
 void SDL_PauseAudio(int) {IMPLEMENT_ME();}
-void SDL_free(char*) {IMPLEMENT_ME();}
+void SDL_free(void*) {IMPLEMENT_ME();}
 SDL_GameController *SDL_GameControllerOpen(int) {IMPLEMENT_ME();}
 void SDL_GameControllerClose(SDL_GameController*) {IMPLEMENT_ME();}
 char *SDL_GameControllerName(SDL_GameController*) {IMPLEMENT_ME();}
@@ -751,3 +754,8 @@ void Mix_SetPanning(int, int, int) {IMPLEMENT_ME();}
 void Mix_PlayChannel(int, void*, int) {IMPLEMENT_ME();}
 int Mix_Playing(int) {IMPLEMENT_ME();}
 void Mix_AllocateChannels(int) {IMPLEMENT_ME();}
+int SDL_JoystickNumButtons(SDL_Joystick*) {IMPLEMENT_ME();}
+char *SDL_JoystickNameForIndex(int) {IMPLEMENT_ME();}
+int SDL_JoystickInstanceID(int*) {IMPLEMENT_ME();}
+int SDL_JoystickGetGUID(int*) {IMPLEMENT_ME();}
+char *SDL_GameControllerMappingForGUID(int) {IMPLEMENT_ME();}

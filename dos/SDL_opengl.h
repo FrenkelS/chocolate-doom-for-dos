@@ -71,7 +71,6 @@ typedef struct SDL_RendererInfo
 
 
 SDL_Renderer *SDL_CreateRenderer(SDL_Window*, int, Uint32);
-SDL_Surface *SDL_CreateRGBSurfaceFrom(void*, int, int, int, int, Uint32, Uint32, Uint32, Uint32);
 SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void*, int, int, int, int, Uint32);
 SDL_Texture* SDL_CreateTexture(SDL_Renderer*, Uint32, int, int, int);
 void SDL_DestroyRenderer(SDL_Renderer*);
@@ -97,7 +96,6 @@ int SDL_SetRelativeMouseMode(SDL_bool);
 int SDL_SetRenderDrawColor(SDL_Renderer*, Uint8, Uint8, Uint8, Uint8);
 int SDL_SetRenderTarget(SDL_Renderer*, SDL_Texture*);
 void SDL_SetWindowFullscreen(SDL_Window*, unsigned int);
-void SDL_SetWindowIcon(SDL_Window*, SDL_Surface*);
 void SDL_SetWindowMinimumSize(SDL_Window*, int, int);
 void SDL_SetWindowSize(SDL_Window*, int, int);
 void SDL_SetWindowTitle(SDL_Window*, const char*);
