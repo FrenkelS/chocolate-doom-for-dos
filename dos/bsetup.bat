@@ -13,6 +13,7 @@ set CFLAGS=-Os -march=i386 -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -
 @set GLOBOBJS=%GLOBOBJS% chocdos.c
 @set GLOBOBJS=%GLOBOBJS% SDL.c
 @set GLOBOBJS=%GLOBOBJS% txt_dos.c
+@set GLOBOBJS=%GLOBOBJS% txt_util.c
 
 @set GLOBOBJS=%GLOBOBJS% ../src/d_iwad.c
 @set GLOBOBJS=%GLOBOBJS% ../src/d_mode.c

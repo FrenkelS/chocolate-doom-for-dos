@@ -176,38 +176,9 @@ int TXT_GetModifierState(txt_modifier_t mod)
 }
 
 
-int TXT_vsnprintf(char *buf, size_t buf_len, const char *s, va_list args)
-{
-	return vsnprintf(buf, buf_len, s, args);
-}
-
-
 void TXT_SetInputMode(txt_input_mode_t mode)
 {
 	UNUSED(mode);
-}
-
-
-void TXT_StringCopy(char *dest, const char *src, size_t dest_len)
-{
-	if (dest_len < 1)
-	{
-		return;
-	}
-
-	dest[dest_len - 1] = '\0';
-	strncpy(dest, src, dest_len - 1);
-}
-
-
-int TXT_snprintf(char *buf, size_t buf_len, const char *s, ...)
-{
-	va_list args;
-	int result;
-	va_start(args, s);
-	result = TXT_vsnprintf(buf, buf_len, s, args);
-	va_end(args);
-	return result;
 }
 
 
