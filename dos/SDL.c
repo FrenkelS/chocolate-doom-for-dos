@@ -29,6 +29,8 @@
 
 #include "a_taskmn.h"
 
+#include "z_zone.h"
+
 
 #define SCREENWIDTH		320
 #define SCREENHEIGHT	200
@@ -207,7 +209,7 @@ SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
 	UNUSED(Bmask);
 	UNUSED(Amask);
 
-	return malloc(sizeof(SDL_Surface));
+	return NULL;
 }
 
 
@@ -220,9 +222,12 @@ void SDL_SetWindowIcon(SDL_Window *window, SDL_Surface *icon)
 
 void SDL_FreeSurface(SDL_Surface *surface)
 {
-	//TODO free(surface->format);
-	//TODO free(surface->pixels);
-	free(surface);
+	if (!surface)
+		return;
+
+	Z_Free(surface->format);
+	Z_Free(surface->pixels);
+	Z_Free(surface);
 }
 
 
@@ -322,9 +327,9 @@ SDL_Surface *SDL_CreateRGBSurface(Uint32 flags, int width, int height, int depth
 		}
 	}
 
-	surface = malloc(sizeof(SDL_Surface));
-	surface->format = malloc(sizeof(SDL_PixelFormat));
-	surface->pixels = malloc(width * height * depth / 8);
+	surface = Z_Malloc(sizeof(SDL_Surface), PU_STATIC, 0);
+	surface->format = Z_Malloc(sizeof(SDL_PixelFormat), PU_STATIC, 0);
+	surface->pixels = Z_Malloc(width * height * depth / 8, PU_STATIC, 0);
 	surface->pitch  = width;
 	return surface;
 }
@@ -349,7 +354,7 @@ SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void *pixels, int width, int hei
 	UNUSED(pitch);
 	UNUSED(format);
 
-	return malloc(sizeof(SDL_Surface));
+	return NULL;
 }
 
 
