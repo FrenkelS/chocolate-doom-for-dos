@@ -69,13 +69,13 @@ set CFLAGS=-O1 -march=i386 -flto -fwhole-program -fomit-frame-pointer -fgcse-sm 
 @set GLOBOBJS=%GLOBOBJS% ../textscreen/txt_window.c
 @set GLOBOBJS=%GLOBOBJS% ../textscreen/txt_window_action.c
 
-gcc %GLOBOBJS% %CFLAGS% -I. -I../src -I../textscreen -DEWOULDBLOCK=EAGAIN -DGAME=\"Doom\" -lemu -o CDOOM/CSETUP.EXE
-strip -s CDOOM/CSETUP.EXE
-stubedit CDOOM/CSETUP.EXE dpmi=CWSDPR0.EXE
+gcc %GLOBOBJS% %CFLAGS% -I. -I../src -I../textscreen -DEWOULDBLOCK=EAGAIN -DGAME=\"Doom\" -lemu -o CDOOM/CSETUP_.EXE
+strip -s CDOOM/CSETUP_.EXE
+stubedit CDOOM/CSETUP_.EXE dpmi=CWSDPR0.EXE
 
-copy CDOOM\CSETUP.EXE CHERETIC
-copy CDOOM\CSETUP.EXE CHEXEN
-copy CDOOM\CSETUP.EXE CSTRIFE
+copy CDOOM\CSETUP_.EXE CHERETIC
+copy CDOOM\CSETUP_.EXE CHEXEN
+copy CDOOM\CSETUP_.EXE CSTRIFE
 
 goto end
 
