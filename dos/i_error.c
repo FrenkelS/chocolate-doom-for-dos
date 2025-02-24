@@ -12,24 +12,27 @@
 // GNU General Public License for more details.
 //
 
-#ifndef __CHOCDOS__
-#define __CHOCDOS__
+#include <string.h>
 
-#include <dos.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "chocdos.h"
 
-#include "compiler.h"
+#include "m_misc.h"
 
-#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
 
-#define LOBYTE(w)	(((uint8_t *)&w)[0])
-#define HIBYTE(w)	(((uint8_t *)&w)[1])
+void I_Error2(const char *error, ...);
 
-#define IMPLEMENT_ME() I_Error("Implement me: %s: %s @ %i\n", __FILE__, __PRETTY_FUNCTION__ , __LINE__)
 
-void I_Error(const char *error, ...);
-void I_SetScreenMode(uint16_t mode);
+void I_Error(const char *error, ...)
+{
+	char msgbuf[512];
+	va_list argptr;
 
-#endif
+	I_SetScreenMode(3);
+
+	va_start(argptr, error);
+	memset(msgbuf, 0, sizeof(msgbuf));
+	M_vsnprintf(msgbuf, sizeof(msgbuf), error, argptr);
+	va_end(argptr);
+
+	I_Error2(msgbuf);
+}

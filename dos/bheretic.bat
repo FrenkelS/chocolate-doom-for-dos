@@ -2,12 +2,16 @@ if "%DJDIR%" == "" goto error
 
 mkdir CHERETIC
 
+powershell -Command "(gc ..\src\i_system.c) -replace 'void I_Error', 'void I_Error2' | Out-File -encoding ASCII i_system.c"
+
 set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funroll-loops -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
 @rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
 @set GLOBOBJS=
 @set GLOBOBJS=%GLOBOBJS% a_taskmn.c
 @set GLOBOBJS=%GLOBOBJS% chocdos.c
+@set GLOBOBJS=%GLOBOBJS% i_error.c
+@set GLOBOBJS=%GLOBOBJS% i_system.c
 @set GLOBOBJS=%GLOBOBJS% opl.c
 @set GLOBOBJS=%GLOBOBJS% pcsound.c
 @set GLOBOBJS=%GLOBOBJS% SDL.c
@@ -33,7 +37,6 @@ set CFLAGS=-Ofast -march=i386 -flto -fwhole-program -fomit-frame-pointer -funrol
 @set GLOBOBJS=%GLOBOBJS% ../src/i_sound.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_sdlmusic.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_sdlsound.c
-@set GLOBOBJS=%GLOBOBJS% ../src/i_system.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_timer.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_video.c
 @set GLOBOBJS=%GLOBOBJS% ../src/m_argv.c

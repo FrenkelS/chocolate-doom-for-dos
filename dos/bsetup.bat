@@ -5,12 +5,16 @@ mkdir CHERETIC
 mkdir CHEXEN
 mkdir CSTRIFE
 
+powershell -Command "(gc ..\src\i_system.c) -replace 'void I_Error', 'void I_Error2' | Out-File -encoding ASCII i_system.c"
+
 set CFLAGS=-O1 -march=i386 -flto -fwhole-program -fomit-frame-pointer -fgcse-sm -fgcse-las -fipa-pta -mpreferred-stack-boundary=2 -Wno-attributes
 @rem set CFLAGS=%CFLAGS% -Wpedantic -Wall -Wextra
 
 @set GLOBOBJS=
 @set GLOBOBJS=%GLOBOBJS% a_taskmn.c
 @set GLOBOBJS=%GLOBOBJS% chocdos.c
+@set GLOBOBJS=%GLOBOBJS% i_error.c
+@set GLOBOBJS=%GLOBOBJS% i_system.c
 @set GLOBOBJS=%GLOBOBJS% SDL.c
 @set GLOBOBJS=%GLOBOBJS% txt_dos.c
 @set GLOBOBJS=%GLOBOBJS% txt_util.c
@@ -19,7 +23,6 @@ set CFLAGS=-O1 -march=i386 -flto -fwhole-program -fomit-frame-pointer -fgcse-sm 
 @set GLOBOBJS=%GLOBOBJS% ../src/d_mode.c
 @set GLOBOBJS=%GLOBOBJS% ../src/deh_str.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_main.c
-@set GLOBOBJS=%GLOBOBJS% ../src/i_system.c
 @set GLOBOBJS=%GLOBOBJS% ../src/i_timer.c
 @set GLOBOBJS=%GLOBOBJS% ../src/m_argv.c
 @set GLOBOBJS=%GLOBOBJS% ../src/m_config.c

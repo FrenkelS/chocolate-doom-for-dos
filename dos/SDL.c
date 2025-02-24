@@ -556,7 +556,8 @@ void SDL_QuitSubSystem(Uint32 flags)
 	switch (flags)
 	{
 		case SDL_INIT_VIDEO:
-			//TODO I_SetScreenMode(3);
+			if (*(uint8_t *)(0x449 + __djgpp_conventional_base) == 0x13) // don't reset mode if it didn't get set
+				I_SetScreenMode(3);
 			break;
 		default:
 			printf("Implement me: SDL_QuitSubSystem(%i)\n", flags);
