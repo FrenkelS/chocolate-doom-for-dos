@@ -692,6 +692,24 @@ void SDL_UpdateWindowSurface(SDL_Window *window)
 }
 
 
+void SDL_DestroyRenderer(SDL_Renderer *renderer)
+{
+	UNUSED(renderer);
+}
+
+
+void SDL_DestroyTexture(SDL_Texture *texture)
+{
+	UNUSED(texture);
+}
+
+
+void SDL_DestroyWindow(SDL_Window *window)
+{
+	UNUSED(window);
+}
+
+
 char* SDL_GetError(void) {IMPLEMENT_ME();}
 int SDL_PeepEvents(void*, int, int, int, int) {IMPLEMENT_ME();}
 void SDL_ShowSimpleMessageBox(int, char*, char*, char*) {IMPLEMENT_ME();}
@@ -740,8 +758,6 @@ int SDLNet_UDP_Recv(void*, void*) {IMPLEMENT_ME();}
 char *SDLNet_GetError(void) {IMPLEMENT_ME();}
 int SDLNet_Read32(void*) {IMPLEMENT_ME();}
 short SDLNet_Read16(void*) {IMPLEMENT_ME();}
-void SDL_DestroyRenderer(SDL_Renderer*) {IMPLEMENT_ME();}
-void SDL_DestroyTexture(SDL_Texture*) {IMPLEMENT_ME();}
 int SDL_GetWindowDisplayIndex(SDL_Window*) {IMPLEMENT_ME();}
 int SDL_GetWindowFlags(SDL_Window*) {IMPLEMENT_ME();}
 int SDL_GetWindowID(SDL_Window*) {IMPLEMENT_ME();}

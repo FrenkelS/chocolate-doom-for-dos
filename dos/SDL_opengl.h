@@ -75,6 +75,7 @@ SDL_Surface *SDL_CreateRGBSurfaceWithFormatFrom(void*, int, int, int, int, Uint3
 SDL_Texture* SDL_CreateTexture(SDL_Renderer*, Uint32, int, int, int);
 void SDL_DestroyRenderer(SDL_Renderer*);
 void SDL_DestroyTexture(SDL_Texture*);
+void SDL_DestroyWindow(SDL_Window*);
 int SDL_GetCurrentDisplayMode(int, SDL_DisplayMode*);
 int SDL_GetDisplayBounds(int, SDL_Rect*);
 int SDL_GetNumVideoDisplays(void);
